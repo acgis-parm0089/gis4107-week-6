@@ -1,4 +1,4 @@
-import phone_utils
+import DaxeshP_VidhiP.phone_utils as phone_utils
 
 def test_is_valid_phone_number():
     # Test cases for valid phone numbers
