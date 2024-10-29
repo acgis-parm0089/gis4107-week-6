@@ -1,18 +1,20 @@
 def get_coords_from_gpx(gpx):
-    # Check gpx string contains 'trkpt'
+    # Check if 'trkpt' tag is present in the GPX string
     if 'trkpt' not in gpx:
-        return None, None
-    
-    # Extract latitude and longitude values
+        return None, None  # Return None if 'trkpt' is missing
+
+    # Locate and extract latitude value
+    lat_start = gpx.find('lat="') + len('lat="')
+    lat_end = gpx.find('"', lat_start)
+    latitude = gpx[lat_start:lat_end]
+
+    # Locate and extract longitude value
+    lon_start = gpx.find('lon="') + len('lon="')
+    lon_end = gpx.find('"', lon_start)
+    longitude = gpx[lon_start:lon_end]
+
+    # Attempt to convert latitude and longitude to floats
     try:
-        lat_start = gpx.index('lat="') + 5
-        lat_end = gpx.index('"', lat_start)
-        lon_start = gpx.index('lon="') + 5
-        lon_end = gpx.index('"', lon_start)
-        
-        latitude = float(gpx[lat_start:lat_end])
-        longitude = float(gpx[lon_start:lon_end])
-        
-        return longitude, latitude
+        return float(longitude), float(latitude)
     except ValueError:
-        return None, None
+        return None, None  # Return None if conversion fails
