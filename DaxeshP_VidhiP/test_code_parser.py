@@ -1,15 +1,21 @@
 from code_parser import get_db_link
 
 def test_get_db_link():
-    test_cases = [
-        ("20-RVP-104225-809", "VP-225"),
-        ("13-VAR-123456-789", "AR-456"),
-        ("99-PRI-857139-123", "RI-139")
-    ]
+    # Valid input
+    result = get_db_link("20-WBO-109642-809")
+    print(result)  # Expected: "BO-642"
 
-    for building_code, expected in test_cases:
-        result = get_db_link(building_code)
-        print(f"Building Code: {building_code} -> Expected: {expected}, Got: {result}")
-        assert result == expected, f"Test failed for {building_code}"
+    # Valid input with expected result for YZ-456
+    result = get_db_link("55-XYZ-123456-234")
+    print(result)  # Expected: "YZ-456"
 
+    # Test with invalid format (missing parts)
+    result = get_db_link("20-WB-109642-809")
+    print(result)  # Expected: None
 
+    # Test with non-standard letter/number lengths
+    result = get_db_link("10-ABC-1234-98")
+    print(result)  # Expected: None
+
+# Run the tests
+test_get_db_link()

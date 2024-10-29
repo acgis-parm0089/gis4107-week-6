@@ -1,37 +1,37 @@
 def dms2dd(dms_record):
+    # Remove any trailing newline characters
+    dms_record = dms_record.strip()
+    
+    # Split the record into components
+    components = dms_record.split()
+    if len(components) != 8:
+        return None, None  # Return None if format is incorrect
+
+    # Parse longitude and latitude components
+    lon_deg, lon_min, lon_sec, lon_dir = components[0], components[1], components[2], components[3].upper()
+    lat_deg, lat_min, lat_sec, lat_dir = components[4], components[5], components[6], components[7].upper()
+
+    # Convert degrees, minutes, and seconds to integers
     try:
-        # Split the DMS into its components
-        parts = dms_record.split()
-        degrees = float(parts[0])
-        minutes = float(parts[1])
-        seconds = float(parts[2])
-        direction = parts[3]
+        lon_deg, lon_min, lon_sec = int(lon_deg), int(lon_min), int(lon_sec)
+        lat_deg, lat_min, lat_sec = int(lat_deg), int(lat_min), int(lat_sec)
+    except ValueError:
+        return None, None  # Return None if conversion fails
 
-        # Validate the ranges
-        if direction in ['N', 'S']:
-            if not (0 <= degrees <= 90):
-                return None, None
-        elif direction in ['E', 'W']:
-            if not (0 <= degrees <= 180):
-                return None, None
-        else:
-            return None, None  # Invalid direction
+    # Validate ranges
+    if not (0 <= lon_deg <= 180 and 0 <= lat_deg <= 90):
+        return None, None
+    if not (0 <= lon_min < 60 and 0 <= lon_sec < 60 and 0 <= lat_min < 60 and 0 <= lat_sec < 60):
+        return None, None
 
-        if not (0 <= minutes < 60) or not (0 <= seconds < 60):
-            return None, None
+    # Convert DMS to Decimal Degrees
+    lon_dd = lon_deg + lon_min / 60 + lon_sec / 3600
+    lat_dd = lat_deg + lat_min / 60 + lat_sec / 3600
 
-        # Convert DMS to decimal degrees
-        decimal_degrees = degrees + (minutes / 60) + (seconds / 3600)
+    # Apply direction for W and S
+    if lon_dir == 'W':
+        lon_dd = -lon_dd
+    if lat_dir == 'S':
+        lat_dd = -lat_dd
 
-        # Apply the direction
-        if direction in ['W', 'S']:
-            decimal_degrees = -decimal_degrees
-
-        # Return the results
-        if direction in ['N', 'S']:
-            return None, decimal_degrees  # Latitude
-        elif direction in ['E', 'W']:
-            return decimal_degrees, None  # Longitude
-    except (ValueError, IndexError):
-        return None, None  # Invalid input format
-
+    return lon_dd, lat_dd

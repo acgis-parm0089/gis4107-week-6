@@ -2,17 +2,22 @@ def get_db_link(building_code):
     # Split the building code into parts
     parts = building_code.split('-')
     
-    # Extract parts
-    lll_part = parts[1]
-    number_part = parts[2]
+    # Check that the code has the correct number of parts
+    if len(parts) != 4:
+        return None  # Return None if format is incorrect
     
-    # Get the last two letters of the LLL part
-    last_two_letters = lll_part[-2:]
+    # Extract the required parts
+    letters_part = parts[1]
+    numbers_part = parts[2]  # Change this to the second numeric part
     
-    # Get the last three numbers of the second numbered part
-    last_three_numbers = number_part[-3:]
+    # Check if parts meet expected format lengths
+    if len(letters_part) < 3 or len(numbers_part) < 3:
+        return None  # Return None if any part is too short
+
+    # Get last two letters of the LLL part and last three digits of the second numeric part
+    last_two_letters = letters_part[-2:]
+    last_three_numbers = numbers_part[-3:]
     
-    # Combine them to form the link
+    # Concatenate the two parts to form the database link
     db_link = f"{last_two_letters}-{last_three_numbers}"
-    
     return db_link
